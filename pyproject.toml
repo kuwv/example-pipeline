@@ -1,0 +1,106 @@
+[build-system]
+requires = ['setuptools>=60.0.0', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "example-pipeline"
+version = "0.1.0"
+description = "Provide example pipelines to prototype github actions."
+readme = "README.md"
+license = {file = "LICENSE.md"}
+keywords = ["stub"]
+requires-python = ">=3.6.2"
+authors = [{name = "Jesse P. Johnson", email = "jpj6652@gmail.com"}]
+maintainers = [{name = "Jesse P. Johnson", email = "jpj6652@gmail.com"}]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries"
+]
+
+[project.optional-dependencies]
+build = [
+  "build",
+  "proman-versioning>=0.5.0-alpha.2",
+  "invoke>=1.4",
+  "twine"
+]
+dev = [
+  # Test
+  "tox>=3.25.0",
+  "pytest>=6.2",
+  "pytest-cov>=2.10",
+  # SCA
+  "bandit>=1.6.2",
+  "pylint>=2.9.5",
+  "mypy>=0.942",
+  # SAST
+  "safety>=1.9",
+  # Style
+  "black==22.3.0",
+  "isort>=5.10.1",
+  "flake8>=3.8.3"
+]
+docs = [
+  "docstr-coverage>=1.2.0",
+  "pydocstyle[toml]>=6.1.1",
+  "mkdocs>=1.2",
+  "mkdocs-material>=7.2",
+  "mkdocstrings>=0.15.2"
+]
+
+[project.urls]
+homepage = "https://github.com/kuwv/example-pipeline"
+repository = "https://github.com/kuwv/example-pipeline"
+
+[[tool.proman.versioning.files]]
+filepath = "src/example_pipeline/__init__.py"
+pattern = "__version__ = '${version}'"
+
+[[tool.proman.versioning.files]]
+filepath = "tests/test_version.py"
+pattern = "__version__ == '${version}'"
+
+[tool.pydocstyle]
+ignore = ["D203", "D213", "D300"]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+multi_line_output = 3
+
+[tool.black]
+line-length = 79
+skip-string-normalization = true
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+    | \.git
+    | \.mypy_cache
+    | \.pytest_cache
+    | build
+    | dist
+  )
+)
+'''
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore::DeprecationWarning:invoke.*:",
+  "ignore::DeprecationWarning:_yaml.*:"
+]
+
+[tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
