@@ -160,7 +160,7 @@ jobs:
           # version push --password "${{ secrets.GITHUB_TOKEN }}"
       - name: Commit version changes
         run: |
-          for f in $VERSIONED_FILES; do
+          for f in $(tar -tzf versioning.tar.gz); do
             git add "$f"
           done
           git commit --message 'ci: update project release'
