@@ -170,6 +170,6 @@ jobs:
       - name: Push version
         run: |
           git show-ref
-          git push origin "refs/heads/${GITHUB_REF_NAME}" \
+          git push origin "HEAD:${GITHUB_REF}" \
             --push-option=ci.skip \
             --follow-tags
