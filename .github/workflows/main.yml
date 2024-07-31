@@ -165,7 +165,8 @@ jobs:
           done
           git commit --message 'ci: update project release'
       - name: Tag version
-        run: git tag --annotate="v${VERSION}" --message="release:v${VERSION}"
+        run: |
+          git tag --annotate "v${VERSION}" --message="ci: update v${VERSION}"
       - name: Push version
         run: |
           git push origin "HEAD:${GITHUB_REF_NAME}" \
