@@ -141,7 +141,10 @@ jobs:
       - name: Tag version
         run: git tag --annotate="v${VERSION}" --message="release:v${VERSION}"
       - name: Push version
-        run: git push --push-option=ci.skip --follow-tags origin "HEAD:${GITHUB_REF_NAME}"
+        run: |
+          git push origin "HEAD:${GITHUB_REF_NAME}" \
+            --push-option=ci.skip \
+            --follow-tags
   publish:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
