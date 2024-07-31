@@ -28,7 +28,7 @@ jobs:
         run: mypy src/**/*.py
       - name: Perform security checks
         run: bandit -r src
-  update-version:
+  version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
