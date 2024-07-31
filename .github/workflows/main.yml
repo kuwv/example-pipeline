@@ -157,7 +157,6 @@ jobs:
         run: |
           git config user.name 'autonomous-bot'
           git config user.email 'an.autonomous.bot@gmail.com'
-          # version push --password "${{ secrets.GITHUB_TOKEN }}"
       - name: Commit version changes
         run: |
           for f in $(tar -tzf versioning.tar.gz); do
@@ -166,6 +165,7 @@ jobs:
           git commit --message 'ci: update project release'
       - name: Tag version
         run: |
+          VERSION=$(version info)
           git tag --annotate "v${VERSION}" --message="ci: update v${VERSION}"
       - name: Push version
         run: |
