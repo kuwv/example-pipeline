@@ -169,6 +169,6 @@ jobs:
           git tag --annotate "v${VERSION}" --message="ci: update v${VERSION}"
       - name: Push version
         run: |
-          git push origin "HEAD:${GITHUB_REF_NAME}" \
+          git push origin "refs/${GITHUB_REF_NAME}" \
             --push-option=ci.skip \
             --follow-tags
