@@ -174,7 +174,7 @@ jobs:
       - name: Tag version
         run: |
           VERSION="${{ needs.get-version.outputs.version }}"
-          git tag --annotate "v${VERSION}" --message="ci: update v${VERSION}"
+          git tag "v${VERSION}" --annotate --message="ci: update v${VERSION}"
       - name: Push version
         run: |
           git show-ref
