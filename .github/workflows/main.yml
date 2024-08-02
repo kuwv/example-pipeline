@@ -152,7 +152,7 @@ jobs:
   publish-version:
     # if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: ['build', 'test']
+    needs: ['build', 'test', 'version']
     steps:
       - uses: actions/checkout@v4
       - name: Download versioned files
