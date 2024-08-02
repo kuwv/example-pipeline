@@ -49,6 +49,7 @@ jobs:
           pip install .[build]
       - name: Bump version
         run: |
+          # VERSION=$(version info)
           version bump
           version info --filepaths | tar -cvzf versioning.tar.gz -T -
       - name: Store versioned files
@@ -56,6 +57,13 @@ jobs:
         with:
           name: "versioning-${{ github.run_number }}"
           path: versioning.tar.gz
+      - name: Get the version
+        id: get-version
+        run: |
+          version=$(version info)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
   build:
     runs-on: ubuntu-latest
     needs: [version, sast]
@@ -165,7 +173,7 @@ jobs:
           git commit --message 'ci: update project release'
       - name: Tag version
         run: |
-          VERSION=$(version info)
+          VERSION="${{ needs.get-version.outputs.version }}"
           git tag --annotate "v${VERSION}" --message="ci: update v${VERSION}"
       - name: Push version
         run: |
