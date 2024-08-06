@@ -173,8 +173,7 @@ jobs:
           done
           git commit --message 'ci: update project release'
       - env:
-          OUTPUT1: ${{needs.bumpversion.outputs.output1}}
-          OUTPUT2: ${{needs.bumpversion.outputs.output2}}
+          OUTPUT1: "${{ needs.bumpversion.outputs.output1 }}"
         run: echo "$OUTPUT1 $OUTPUT2"
       # - name: Tag version
       #   env:
