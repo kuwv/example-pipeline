@@ -32,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [sast]
     outputs:
+      output1: ${{ steps.step1.outputs.test }}
       version: "${{ steps.getversion.outputs.version }}"
     steps:
       - uses: actions/checkout@v4
@@ -54,9 +55,11 @@ jobs:
         run: |
           version bump
           version info --filepaths | tar -cvzf versioning.tar.gz -T -
-      - name: Nofify other jobs of version update
-        id: getversion
-        run: echo "version=$(version info)" >> "$GITHUB_OUTPUT"
+      # - name: Nofify other jobs of version update
+      #   id: getversion
+      #   run: echo "version=$(version info)" >> "$GITHUB_OUTPUT"
+      - id: step1
+        run: echo "test=hello" >> "$GITHUB_OUTPUT"
       - name: Store versioned files
         uses: actions/upload-artifact@v4
         with:
@@ -169,10 +172,14 @@ jobs:
             git add "$f"
           done
           git commit --message 'ci: update project release'
-      - name: Tag version
-        env:
-          VERSION: ${{needs.bumpversion.outputs.version}}
-        run: git tag "v${VERSION}" --annotate --message="ci: update v${VERSION}"
+      - env:
+          OUTPUT1: ${{needs.bumpversion.outputs.output1}}
+          OUTPUT2: ${{needs.bumpversion.outputs.output2}}
+        run: echo "$OUTPUT1 $OUTPUT2"
+      # - name: Tag version
+      #   env:
+      #     VERSION: ${{needs.bumpversion.outputs.version}}
+      #   run: git tag "v${VERSION}" --annotate --message="ci: update v${VERSION}"
       - name: Push version
         run: |
           git show-ref
