@@ -33,7 +33,7 @@ jobs:
     needs: [sast]
     outputs:
       output1: ${{ steps.step1.outputs.test }}
-      version: "${{ steps.getversion.outputs.version }}"
+      version: ${{ steps.getversion.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,9 +55,9 @@ jobs:
         run: |
           version bump
           version info --filepaths | tar -cvzf versioning.tar.gz -T -
-      # - name: Nofify other jobs of version update
-      #   id: getversion
-      #   run: echo "version=$(version info)" >> "$GITHUB_OUTPUT"
+      # name: Nofify other jobs of version update
+      - id: getversion
+        run: echo "version=$(version info)" >> "$GITHUB_OUTPUT"
       - id: step1
         run: echo "test=hello" >> "$GITHUB_OUTPUT"
       - name: Store versioned files
@@ -174,7 +174,8 @@ jobs:
           git commit --message 'ci: update project release'
       - env:
           OUTPUT1: "${{ needs.bumpversion.outputs.output1 }}"
-        run: echo "$OUTPUT1 $OUTPUT2"
+          VERSION: "${{ needs.bumpversion.outputs.version }}"
+        run: echo "$OUTPUT1 $VERSION"
       # - name: Tag version
       #   env:
       #     VERSION: ${{needs.bumpversion.outputs.version}}
