@@ -173,11 +173,12 @@ jobs:
         env:
           VERSION: "${{ needs.bumpversion.outputs.version }}"
         run: |
-          echo "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
           git tag "v${VERSION}" --annotate --message "ci: update v${VERSION}"
       - name: Push version
+        env:
+          BRANCH: "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
         run: |
           git show-ref
-          git push origin "HEAD:${GITHUB_REF}" \
+          git push origin "$BRANCH" \
             --push-option=ci.skip \
             --follow-tags
