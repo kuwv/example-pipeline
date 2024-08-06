@@ -176,10 +176,10 @@ jobs:
           OUTPUT1: "${{ needs.bumpversion.outputs.output1 }}"
           VERSION: "${{ needs.bumpversion.outputs.version }}"
         run: echo "${OUTPUT1} ${VERSION}"
-      # - name: Tag version
-      #   env:
-      #     VERSION: "${{ needs.bumpversion.outputs.version }}"
-      #   run: git tag "v${VERSION}" --annotate --message="ci: update v${VERSION}"
+      - name: Tag version
+        env:
+          VERSION: "${{ needs.bumpversion.outputs.version }}"
+        run: git tag "v${VERSION}" --annotate --message="ci: update v${VERSION}"
       - name: Push version
         run: |
           git show-ref
