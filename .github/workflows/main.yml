@@ -179,7 +179,7 @@ jobs:
           git show-ref
           git remote -v
           git branch
-          git pull oritin "${GITHUB_HEAD_REF:-$GITHUB_REF}" \
+          git pull origin "${GITHUB_HEAD_REF:-$GITHUB_REF}" \
             --ff \
             --rebase \
             --strategy-option theirs
