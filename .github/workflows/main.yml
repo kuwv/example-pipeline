@@ -175,10 +175,8 @@ jobs:
         run: |
           git tag "v${VERSION}" --annotate --message "ci: update v${VERSION}"
       - name: Push version
-        env:
-          BRANCH: "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
         run: |
           git show-ref
-          git push origin "$BRANCH" \
+          git push origin "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" \
             --push-option=ci.skip \
             --follow-tags
