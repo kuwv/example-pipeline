@@ -173,7 +173,7 @@ jobs:
         env:
           VERSION: "${{ needs.bumpversion.outputs.version }}"
         run: |
-          echo "$VERSION"
+          echo "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
           git tag "v${VERSION}" --annotate --message "ci: update v${VERSION}"
       - name: Push version
         run: |
