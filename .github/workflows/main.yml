@@ -171,9 +171,8 @@ jobs:
           git commit --message 'ci: update project release'
       - name: Tag version
         env:
-          VERSION: "${{ needs.getversion.outputs.version }}"
-        run: |
-          git tag "v${VERSION}" --annotate --message="ci: update v${VERSION}"
+          VERSION: "${{ needs.version.outputs.version }}"
+        run: git tag "v${VERSION}" --annotate --message="ci: update v${VERSION}"
       - name: Push version
         run: |
           git show-ref
