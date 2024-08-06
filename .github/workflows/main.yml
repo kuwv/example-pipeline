@@ -179,6 +179,10 @@ jobs:
           git show-ref
           git remote -v
           git branch
+          git pull oritin "${GITHUB_HEAD_REF:-$GITHUB_REF}" \
+            --ff \
+            --rebase \
+            --strategy-option theirs
           git push origin "HEAD:${GITHUB_HEAD_REF:-$GITHUB_REF}" \
             --push-option=ci.skip \
             --follow-tags
