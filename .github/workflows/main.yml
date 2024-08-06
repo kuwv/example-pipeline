@@ -28,8 +28,12 @@ jobs:
         run: mypy src/**/*.py
       - name: Perform security checks
         run: bandit -r src
-  version:
+  bumpversion:
     runs-on: ubuntu-latest
+    needs: [sast]
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      version: ${{ steps.getversion.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,14 +53,13 @@ jobs:
           pip install .[build]
       - name: Bump version
         run: |
-          version info
-          if [ "${GITHUB_REF##*/}" == "main" ]; then
-            version bump --commit --tag
-            version push --password "${{ secrets.GITHUB_TOKEN }}"
-          else
-            version bump
-          fi
+          version bump
           version info --filepaths | tar -cvzf versioning.tar.gz -T -
+      # name: Nofify other jobs of version update
+      - id: getversion
+        run: echo "version=$(version info)" >> "$GITHUB_OUTPUT"
+      - id: step1
+        run: echo "test=hello" >> "$GITHUB_OUTPUT"
       - name: Store versioned files
         uses: actions/upload-artifact@v4
         with:
@@ -64,7 +67,7 @@ jobs:
           path: versioning.tar.gz
   build:
     runs-on: ubuntu-latest
-    needs: [version, sast]
+    needs: [bumpversion, sast]
     steps:
       - uses: actions/checkout@v4
       - name: 'Set up Python 3.11'
@@ -118,21 +121,15 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install .[dev]
-          pip install ./dist/*whl
+          pip install dist/*whl
       - name: Perform tests
         run: pytest --cov=superstate --cov-report=xml tests
   publish:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: ['build', 'test']
+    needs: [build, test]
     steps:
       - uses: actions/checkout@v4
-      - name: Download versioned files
-        uses: actions/download-artifact@v4
-        with:
-          name: "versioning-${{ github.run_number }}"
-      - name: Install dependencies
-        run: tar -xzf versioning.tar.gz
       - name: Download versioned files
         uses: actions/download-artifact@v4
         with:
@@ -153,3 +150,40 @@ jobs:
             --repository testpypi \
             --username __token__ \
             --password "${{ secrets.TWINE_PASSWORD }}"
+  publish-version:
+    # if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [build, test, bumpversion]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download versioned files
+        uses: actions/download-artifact@v4
+        with:
+          name: "versioning-${{ github.run_number }}"
+      - name: Install dependencies
+        run: tar -xzf versioning.tar.gz
+      - name: Setup gitconfig
+        run: |
+          git config user.name 'autonomous-bot'
+          git config user.email 'an.autonomous.bot@gmail.com'
+      - name: Commit version changes
+        run: |
+          for f in $(tar -tzf versioning.tar.gz); do
+            git add "$f"
+          done
+          git commit --message 'ci: update project release'
+      - env:
+          OUTPUT1: "${{ needs.bumpversion.outputs.output1 }}"
+          VERSION: "${{ needs.bumpversion.outputs.version }}"
+        run: echo "${OUTPUT1} ${VERSION}"
+      - name: Tag version
+        env:
+          VERSION: "${{ needs.bumpversion.outputs.version }}"
+        run: |
+          git tag "v${VERSION}" --annotate --message "ci: update v${VERSION}"
+      - name: Push version
+        run: |
+          git show-ref
+          git push origin "HEAD:${GITHUB_REF}" \
+            --push-option=ci.skip \
+            --follow-tags
