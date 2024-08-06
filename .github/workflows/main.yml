@@ -177,6 +177,7 @@ jobs:
       - name: Push version
         run: |
           git show-ref
-          git push origin "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" \
+          git remote -v
+          git push origin "HEAD:${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" \
             --push-option=ci.skip \
             --follow-tags
