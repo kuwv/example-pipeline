@@ -32,9 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [sast]
     outputs:
-      version:
-        description: Capture version overlay for each stage
-        value: "${{ steps.getversion.outputs.version }}"
+      version: "${{ steps.getversion.outputs.version }}"
     steps:
       - uses: actions/checkout@v4
         with:
