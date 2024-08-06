@@ -32,8 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [sast]
     outputs:
-      output1: ${{ steps.step1.outputs.test }}
-      version: ${{ steps.getversion.outputs.version }}
+      output1: "${{ steps.step1.outputs.test }}"
+      version: "${{ steps.getversion.outputs.version }}"
     steps:
       - uses: actions/checkout@v4
         with:
