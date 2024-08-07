@@ -8,7 +8,7 @@ from typing import List
 
 __author__ = 'Jesse P. Johnson'
 __title__ = 'example_pipeline'
-__version__ = '0.1.0.post2'
+__version__ = '0.1.0.post3'
 __all__: List[str] = []
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
