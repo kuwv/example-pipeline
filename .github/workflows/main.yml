@@ -182,12 +182,12 @@ jobs:
           VERSION: "${{ needs.bumpversion.outputs.version }}"
         run: |
           git tag "v${VERSION}" --annotate --message "ci: update v${VERSION}"
-      - name: Push version
+      - name: Push version + tag
         run: |
-          # git pull origin "${GITHUB_HEAD_REF:-$GITHUB_REF}" \
-          #   --ff \
-          #   --rebase \
-          #   --strategy-option theirs
+          git pull origin "${GITHUB_HEAD_REF:-$GITHUB_REF}" \
+            --ff \
+            --rebase \
+            --strategy-option theirs
           git push origin "HEAD:${GITHUB_HEAD_REF:-$GITHUB_REF}" \
             --push-option=ci.skip \
             --follow-tags
