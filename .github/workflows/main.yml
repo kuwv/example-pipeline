@@ -155,8 +155,8 @@ jobs:
           name: "versioning-${{ github.run_number }}"
       - name: Setup gitconfig
         run: |
-          git config user.name "$GIT_USER_NAME"
-          git config user.email "$GIT_USER_EMAIL"
+          git config user.name "${{ vars.GIT_USER_NAME }}"
+          git config user.email "${{ vars.GIT_USER_EMAIL }}"
       - name: Commit version changes
         run: |
           tar -xzf versioning.tar.gz
