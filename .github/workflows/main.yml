@@ -160,13 +160,21 @@ jobs:
       - name: Install dependencies
         run: tar -xzf versioning.tar.gz
       - name: Setup gitconfig
+        env:
+          REPO: |-
+            https://x-access-token:${{
+              secrets.GITHUB_TOKEN
+            }}@github.com/${{
+              github.repository
+            }}
         run: |
           git config user.name 'autonomous-bot'
           git config user.email 'an.autonomous.bot@gmail.com'
+          git remote set-url origin "$REPO"
       - name: Commit version changes
         run: |
-          for f in $(tar -tzf versioning.tar.gz); do
-            git add "$f"
+          for X in $(tar -tzf versioning.tar.gz); do
+            git add "$X"
           done
           git commit --message 'ci: update project release'
       - name: Tag version
@@ -176,13 +184,10 @@ jobs:
           git tag "v${VERSION}" --annotate --message "ci: update v${VERSION}"
       - name: Push version
         run: |
-          git show-ref
-          git remote -v
-          git branch
-          git pull origin "${GITHUB_HEAD_REF:-$GITHUB_REF}" \
-            --ff \
-            --rebase \
-            --strategy-option theirs
+          # git pull origin "${GITHUB_HEAD_REF:-$GITHUB_REF}" \
+          #   --ff \
+          #   --rebase \
+          #   --strategy-option theirs
           git push origin "HEAD:${GITHUB_HEAD_REF:-$GITHUB_REF}" \
             --push-option=ci.skip \
             --follow-tags
